@@ -47,8 +47,8 @@ void main() {
     expect(dialog, findsOneWidget);
 
     // Contains both expected toggle labels
-    final toggleLabel1 = find.text('Enable Fast Preview');
-    final toggleLabel2 = find.text('Enable High Precision');
+    final toggleLabel1 = find.text('Antialiasing');
+    final toggleLabel2 = find.text('Smoothing');
     expect(toggleLabel1, findsOneWidget);
     expect(toggleLabel2, findsOneWidget);
 
