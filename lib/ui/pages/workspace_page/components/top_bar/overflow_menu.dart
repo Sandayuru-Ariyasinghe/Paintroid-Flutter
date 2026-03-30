@@ -21,7 +21,8 @@ enum OverflowMenuOption {
   saveImage,
   saveProject,
   loadImage,
-  newImage;
+  newImage,
+  advancedOptions;
 
   String localizedLabel(BuildContext context) {
     final localizations = AppLocalizations.of(context);
@@ -36,6 +37,8 @@ enum OverflowMenuOption {
         return localizations.newImage;
       case OverflowMenuOption.saveProject:
         return localizations.saveProject;
+      case OverflowMenuOption.advancedOptions:
+        return 'Advanced Options';
     }
   }
 }
@@ -82,6 +85,9 @@ class _OverflowMenuState extends ConsumerState<OverflowMenu> {
         break;
       case OverflowMenuOption.newImage:
         ioHandler.newImage(context, this);
+        break;
+      case OverflowMenuOption.advancedOptions:
+        //_showAdvancedOptionsDialog();
         break;
     }
   }

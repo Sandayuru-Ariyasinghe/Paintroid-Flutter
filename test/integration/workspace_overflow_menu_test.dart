@@ -80,6 +80,8 @@ void main() {
           case OverflowMenuOption.saveProject:
             label = localizations.saveProject;
             break;
+          case OverflowMenuOption.advancedOptions:
+            throw UnimplementedError();
         }
         expect(find.text(label), findsOneWidget,
             reason: 'Menu item $label should be visible');
