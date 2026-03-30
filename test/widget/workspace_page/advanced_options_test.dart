@@ -13,11 +13,13 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
-          home: PaintroidTheme(
+          // The key is to wrap the Navigator/App level with the theme
+          builder: (context, child) => PaintroidTheme(
             lightTheme: LightPaintroidThemeData(),
             darkTheme: DarkPaintroidThemeData(),
-            child: const WorkspacePage(),
+            child: child!,
           ),
+          home: const WorkspacePage(),
           localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -69,6 +71,6 @@ void main() {
     await tester.tap(switch1);
     await tester.pumpAndSettle();
     expect(tester.widget<Switch>(switch1).value, isTrue);
-    
+
   });
 }
