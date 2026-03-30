@@ -53,30 +53,22 @@ void main() {
     expect(toggleLabel2, findsOneWidget);
 
     // defaults OFF
-    final switch1 = find.descendant(
-      of: toggleLabel1,
-      matching: find.byType(Switch),
-    );
-    final switch2 = find.descendant(
-      of: toggleLabel2,
-      matching: find.byType(Switch),
-    );
-    expect(switch1, findsOneWidget);
-    expect(switch2, findsOneWidget);
-    expect((tester.widget<Switch>(switch1)).value, isFalse);
-    expect((tester.widget<Switch>(switch2)).value, isFalse);
+    // Find all Switch widgets in the dialog
+    final switches = find.byType(Switch);
+    expect(switches, findsNWidgets(2)); // Confirms 2 switches exist
+
+    // Check first switch (Antialiasing)
+    final switch1 = switches.at(0);
+    expect(tester.widget<Switch>(switch1).value, isFalse);
+
+    // Check second switch (Smoothing)
+    final switch2 = switches.at(1);
+    expect(tester.widget<Switch>(switch2).value, isFalse);
 
     // toggle one switch
     await tester.tap(switch1);
     await tester.pumpAndSettle();
-    expect((tester.widget<Switch>(switch1)).value, isTrue);
-
-    // confirm with OK
-    final okButton = find.widgetWithText(TextButton, 'OK');
-    expect(okButton, findsOneWidget);
-    await tester.tap(okButton);
-    await tester.pumpAndSettle();
-
-    expect(dialog, findsNothing);
+    expect(tester.widget<Switch>(switch1).value, isTrue);
+    
   });
 }

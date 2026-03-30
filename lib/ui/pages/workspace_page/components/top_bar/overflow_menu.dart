@@ -13,6 +13,7 @@ import 'package:paintroid/core/providers/object/io_handler.dart';
 import 'package:paintroid/core/providers/state/workspace_state_notifier.dart';
 import 'package:paintroid/ui/shared/dialogs/overwrite_dialog.dart';
 import 'package:paintroid/ui/shared/dialogs/save_image_dialog.dart';
+import 'package:paintroid/ui/shared/dialogs/advanced_options_dialog.dart';
 import 'package:paintroid/ui/shared/pop_menu_button.dart';
 import 'package:paintroid/ui/theme/theme.dart';
 
@@ -87,13 +88,20 @@ class _OverflowMenuState extends ConsumerState<OverflowMenu> {
         ioHandler.newImage(context, this);
         break;
       case OverflowMenuOption.advancedOptions:
-        //_showAdvancedOptionsDialog();
+        _showAdvancedOptionsDialog();
         break;
     }
   }
 
   void _enterFullscreen() =>
       ref.read(workspaceStateProvider.notifier).toggleFullscreen(true);
+
+  void _showAdvancedOptionsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => const AdvancedOptionsDialog(),
+    );
+  }
 
   Future<bool> _showOverwriteDialog() async {
     return await showOverwriteDialog(context) ?? false;
