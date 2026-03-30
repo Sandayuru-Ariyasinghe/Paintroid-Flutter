@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paintroid/ui/theme/data/paintroid_theme.dart';
 
 class AdvancedOptionsDialog extends StatefulWidget {
   const AdvancedOptionsDialog({super.key});
@@ -14,34 +15,43 @@ class _AdvancedOptionsDialogState extends State<AdvancedOptionsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    // Access the custom Paintroid theme
+    final theme = PaintroidTheme.of(context);
+    final primaryColor = theme.primaryColor; // This pulls the teal/blue from the app's config
+
     return AlertDialog(
-      title: const Text('Advanced Options'),
+      title: Text(
+        'Advanced Options',
+        style: TextStyle(
+          color: primaryColor, 
+          fontWeight: FontWeight.normal,
+        ),
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           SwitchListTile(
             title: const Text('Antialiasing'),
             value: _antialiasing,
-            onChanged: (bool value) => setState(() => _antialiasing = value),
+            activeColor: primaryColor,
+            onChanged: (val) => setState(() => _antialiasing = val),
           ),
           SwitchListTile(
             title: const Text('Smoothing'),
             value: _smoothing,
-            onChanged: (bool value) => setState(() => _smoothing = value),
+            activeColor: primaryColor,
+            onChanged: (val) => setState(() => _smoothing = val),
           ),
         ],
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('CANCEL'),
+          child: Text('CANCEL', style: TextStyle(color: primaryColor)),
         ),
         TextButton(
-          onPressed: () {
-            // Persistence logic will go here in the next step
-            Navigator.pop(context);
-          },
-          child: const Text('OK'),
+          onPressed: () {},
+          child: Text('OK', style: TextStyle(color: primaryColor)),
         ),
       ],
     );
