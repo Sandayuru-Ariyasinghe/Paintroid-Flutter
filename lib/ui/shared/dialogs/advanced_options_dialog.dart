@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:paintroid/ui/theme/data/paintroid_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:paintroid/ui/theme/theme.dart';
 
 class AdvancedOptionsDialog extends StatefulWidget {
   const AdvancedOptionsDialog({super.key});
@@ -9,23 +10,45 @@ class AdvancedOptionsDialog extends StatefulWidget {
 }
 
 class _AdvancedOptionsDialogState extends State<AdvancedOptionsDialog> {
-  // Requirement: Disabled by default
+  // Requirement: Both options must be disabled by default.
   bool _antialiasing = false;
   bool _smoothing = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      // Logic: If the key doesn't exist yet, it returns null, so we default to 'false'.
+      _antialiasing = prefs.getBool('antialiasing') ?? false;
+      _smoothing = prefs.getBool('smoothing') ?? false;
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _saveSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('antialiasing', _antialiasing);
+    await prefs.setBool('smoothing', _smoothing);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Access the custom Paintroid theme
+    // Show nothing or a loader until we know the previous state
+    if (_isLoading) return const SizedBox.shrink();
+
     final theme = PaintroidTheme.of(context);
-    final primaryColor = theme.primaryColor; // This pulls the teal/blue from the app's config
+    final primaryColor = theme.primaryColor;
 
     return AlertDialog(
       title: Text(
         'Advanced Options',
-        style: TextStyle(
-          color: primaryColor, 
-          fontWeight: FontWeight.normal,
-        ),
+        style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -50,7 +73,10 @@ class _AdvancedOptionsDialogState extends State<AdvancedOptionsDialog> {
           child: Text('CANCEL', style: TextStyle(color: primaryColor)),
         ),
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () async {
+            await _saveSettings();
+            if (mounted) Navigator.pop(context);
+          },
           child: Text('OK', style: TextStyle(color: primaryColor)),
         ),
       ],
