@@ -50,7 +50,7 @@ class _AdvancedOptionsDialogState extends State<AdvancedOptionsDialog> {
           child: Text('CANCEL', style: TextStyle(color: primaryColor)),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context),
           child: Text('OK', style: TextStyle(color: primaryColor)),
         ),
       ],

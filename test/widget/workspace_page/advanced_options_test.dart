@@ -7,9 +7,12 @@ import 'package:paintroid/ui/pages/workspace_page/workspace_page.dart';
 import 'package:paintroid/ui/theme/data/dark_paintroid_theme_data.dart';
 import 'package:paintroid/ui/theme/data/light_paintroid_theme_data.dart';
 import 'package:paintroid/ui/theme/data/paintroid_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   testWidgets('Workspace overlay Advanced Options flow', (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
     await tester.pumpWidget(
       ProviderScope(
         child: MaterialApp(
@@ -44,6 +47,10 @@ void main() {
     await tester.tap(advancedOptionsItem);
     await tester.pumpAndSettle();
 
+    await tester.pump(); // Start the dialog build (shows SizedBox)
+    await tester.pump(Duration.zero); // Let the SharedPreferences Future finish
+    await tester.pumpAndSettle(); // Finish animations (shows AlertDialog)
+
     // dialog appears
     final dialog = find.byType(AlertDialog);
     expect(dialog, findsOneWidget);
@@ -71,6 +78,26 @@ void main() {
     await tester.tap(switch1);
     await tester.pumpAndSettle();
     expect(tester.widget<Switch>(switch1).value, isTrue);
+
+    // --- Persistence Check ---
+    
+    // 1. Toggle 'Smoothing' to true as well
+    await tester.tap(switch2);
+    await tester.pumpAndSettle();
+    
+    // 2. Tap OK to save and close
+    final okButton = find.text('OK');
+    expect(okButton, findsOneWidget);
+    await tester.tap(okButton);
+    await tester.pumpAndSettle();
+
+    // 3. Verify dialog is gone
+    expect(find.byType(AlertDialog), findsNothing);
+
+    // 4. Verify the data actually hit the disk (Mock SharedPreferences)
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getBool('antialiasing'), isTrue, reason: 'Antialiasing should be saved as true');
+    expect(prefs.getBool('smoothing'), isTrue, reason: 'Smoothing should be saved as true');
 
   });
 }
