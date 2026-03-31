@@ -74,8 +74,14 @@ class _AdvancedOptionsDialogState extends State<AdvancedOptionsDialog> {
         ),
         TextButton(
           onPressed: () async {
+            final navigator = Navigator.of(context); 
+            
             await _saveSettings();
-            if (mounted) Navigator.pop(context);
+            
+            // 2. The linter often prefers checking !mounted first 
+            // or using the captured navigator.
+            if (!mounted) return;
+            navigator.pop();
           },
           child: Text('OK', style: TextStyle(color: primaryColor)),
         ),
